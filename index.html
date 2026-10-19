@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>发疯文学</title>
+<meta name="theme-color" content="#0d0d12">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d0d12;--card:#16161f;--pink:#ff2d78;--lime:#c8ff2d;--vio:#a855f7;--mut:#8a8a96}
+body{background:var(--bg);color:#f2f2f5;font-family:"PingFang SC","Microsoft YaHei",sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px 40px}
+h1{font-size:2rem;margin:18px 0 4px;background:linear-gradient(90deg,var(--pink),var(--vio),var(--lime));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900;letter-spacing:.1em}
+.sub{color:var(--mut);font-size:.85rem;margin-bottom:22px}
+.box{width:100%;max-width:560px;background:var(--card);border:1px solid #2a2a36;border-radius:16px;padding:20px;box-shadow:0 0 40px rgba(255,45,120,.08)}
+label{display:block;color:var(--mut);font-size:.8rem;margin-bottom:8px}
+input{width:100%;background:#0d0d12;border:1px solid #2a2a36;color:#fff;border-radius:10px;padding:12px 14px;font-size:1rem;outline:none}
+input:focus{border-color:var(--pink)}
+#go{width:100%;margin-top:14px;border:none;border-radius:12px;padding:14px;font-size:1.15rem;font-weight:900;letter-spacing:.3em;color:#0d0d12;background:linear-gradient(90deg,var(--pink),var(--vio));cursor:pointer;box-shadow:0 4px 24px rgba(255,45,120,.4)}
+#go:active{transform:scale(.97)}
+#out{margin-top:18px;background:#0d0d12;border:1px dashed #3a3a48;border-radius:12px;padding:18px;min-height:150px;font-size:1.02rem;line-height:1.9;white-space:pre-wrap;word-break:break-all}
+#out .cursor{display:inline-block;width:2px;height:1.1em;background:var(--lime);vertical-align:-2px;animation:blink .8s infinite}
+@keyframes blink{50%{opacity:0}}
+.row{display:flex;gap:10px;margin-top:14px}
+.row button{flex:1;border:1px solid #2a2a36;background:#1c1c26;color:#f2f2f5;border-radius:10px;padding:11px;font-size:.95rem;cursor:pointer}
+.row button:active{background:#26262f}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.tags span{background:#1c1c26;border:1px solid #2a2a36;border-radius:20px;padding:6px 14px;font-size:.8rem;color:var(--mut);cursor:pointer}
+.tags span:active{border-color:var(--pink);color:#fff}
+.foot{margin-top:26px;color:#55555f;font-size:.75rem;text-align:center}
+</style>
+</head>
+<body>
+<h1>🤪 发疯文学</h1>
+<div class="sub">输入一个让你破防的对象，一键生成发疯文学</div>
+<div class="box">
+  <label>发疯对象（人名 / 事件）</label>
+  <input id="t" maxlength="12" placeholder="比如：老板、加班、甲方……" value="老板">
+  <div class="tags" id="tags"></div>
+  <button id="go">发 疯</button>
+  <div id="out"><span style="color:#55555f">点击上方按钮，开始发疯……</span></div>
+  <div class="row">
+    <button id="copy">📋 复制</button>
+    <button id="again">🔀 再疯一条</button>
+  </div>
+</div>
+<div class="foot">疯得理直气壮 · 发完记得吃药 💊</div>
+<script>
+const TPL=[
+"我不理解！{t}凭什么可以这样对我！我宣布我疯了！现在！立刻！马上！啊啊啊啊啊啊！",
+"好好好，{t}是吧，玩我是吧，我不活了，我要去天台种地，把月亮摘下来砸你家玻璃！",
+"谁懂啊家人们，{t}又在发癫，我真的会谢！我宣布退出人类籍，加入猩猩籍，明天就去动物园报到！",
+"微笑，{t}，微笑。全世界都在针对我，但我依然微笑，因为医生说我笑起来比较不像病人。",
+"{t}！你没有心！我的心碎成了二维码，扫一下，全是你的罪证！",
+"让我看看是谁在深夜emo——哦是我自己。{t}，你成功了，你把我逼疯了，我现在就去啃床头柜！",
+"啊对对对，{t}说得都对，我错了，我有罪，我现在就把脑子摘下来给你当球踢，满意了吗！",
+"禁止emo！{t}！本宫现在就要发疯！来人！把我的理智拖出去斩了！顺便把{t}也拖出去！",
+"我宣布：从今天起，{t}就是我的死敌！我要每天在你家门口跳科目三，跳到你心态爆炸！",
+"救命！{t}！我真的要发疯了！我的精神状态 be like：稳定发疯中，勿扰，谢谢。",
+"{t}，你知道吗，我攒了一肚子的话想骂你，但医生说我不能激动，所以我只能在心里骂你八百遍。",
+"家人们谁懂啊，{t}把我逼成这样，我现在看谁都像{t}，连我家狗路过我都想问它：你是{t}派来的吗？",
+"我不发疯谁发疯！{t}！我这就把工位搬到天台去，风一吹，我的烦恼和{t}一起飞走！",
+"好好好，这么玩是吧，{t}，我记住你了，等我修炼成仙，第一个渡的就是你——渡你上西天！",
+"{t}！我警告你！我的忍耐是有限度的！我的限度是——零！现在！立刻！给我道歉！不然我就……我就哭给你看！",
+"精神状态良好（指已经疯了）。{t}，感谢你，让我提前体验了精神病院的 VIP 生活。",
+"我宣布我摆烂了！{t}！你爱咋咋地！我要去流浪，带着我的破碗和{t}的罪证，走遍天涯海角！",
+"啊啊啊{t}！我受不了了！我要变成一只尖叫鸡，每天在你耳边：啊——啊——啊——！",
+"{t}，你赢了，我输了，我输得彻彻底底，我现在就去把地球仪上的你家抠掉，眼不见为净！",
+"谁再跟我提{t}我跟谁急！我现在一听{t}两个字就浑身发抖，医生说这是 PTSD，我说这是仇恨！",
+"{t}，别逼我，逼急了我什么都做得出来——除了好好工作和早睡早起。",
+"从今天起我就是钮祜禄·发疯，{t}，你等着接招吧，我的招式是：无差别发疯！"
+];
+const QUICK=["老板","加班","甲方","房东","相亲对象","KPI","闹钟","周一"];
+const $=id=>document.getElementById(id);
+let cur='',timer=null,lastIdx=-1;
+$('tags').innerHTML=QUICK.map(q=>`<span>${q}</span>`).join('');
+document.querySelectorAll('#tags span').forEach(s=>s.onclick=()=>{$('t').value=s.textContent;go()});
+function go(){
+  const t=($('t').value||'老板').trim()||'老板';
+  let i;do{i=Math.floor(Math.random()*TPL.length)}while(i===lastIdx&&TPL.length>1);
+  lastIdx=i;cur=TPL[i].split('{t}').join(t);
+  typewrite(cur);
+}
+function typewrite(text){
+  clearInterval(timer);
+  const out=$('out');out.innerHTML='';
+  let i=0;
+  timer=setInterval(()=>{
+    i+=2;
+    out.innerHTML=esc(text.slice(0,i))+'<span class="cursor"></span>';
+    if(i>=text.length){clearInterval(timer);out.innerHTML=esc(text)}
+  },30);
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+$('go').onclick=go;
+$('again').onclick=go;
+$('copy').onclick=()=>{if(!cur)return;navigator.clipboard.writeText(cur).then(()=>{const b=$('copy');b.textContent='已复制 ✓';setTimeout(()=>b.textContent='📋 复制',1200)})};
+$('t').addEventListener('keydown',e=>{if(e.key==='Enter')go()});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body>
+</html>
